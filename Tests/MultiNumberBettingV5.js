@@ -164,7 +164,7 @@ contract('MultiNumberBettingV5', function(accounts) {
             gasUsed = result.receipt.gasUsed;
             return web3.eth.getTransaction(result.tx);
         }).then(function (result) {
-            gasCost = result.gasPrice.mul(gasUsed);
+            gasCost = result.gasPrice.times(gasUsed);
             console.log(
                 "Bet tx gas cost (" + getWeiStr(gasCost) +
                 ") = gas price (" + getWeiStr(result.gasPrice) +
@@ -180,6 +180,29 @@ contract('MultiNumberBettingV5', function(accounts) {
                 result.toString(),
                 "Better " + winningBetter.name + " wasn't credited with remaining contract balance " + contractBalance
             );
+        });
+    });
+
+    it('Bet amount < MIN_BET throws exception', function() {
+        var multiNumberBetting;
+        return MultiNumberBettingV5.deployed().then(function (instance) {
+            multiNumberBetting = instance;
+            var better = charlie;
+            return multiNumberBetting.guess(5, better.name, { from: better.address, value: 0 });
+        }).then(assert.fail).catch(function (error) {
+            assert.include(error.message, "VM Exception", "Making bet with amount < MIN_BET should throw exception");
+        });
+    });
+
+    it('Bet amount > MAX_BET throws exception', function() {
+        var multiNumberBetting;
+        return MultiNumberBettingV5.deployed().then(function (instance) {
+            multiNumberBetting = instance;
+            var better = alice;
+            var betAmount = web3.toWei(MAX_BET + MIN_BET);
+            return multiNumberBetting.guess(5, better.name, { from: better.address, value: betAmount });
+        }).then(assert.fail).catch(function (error) {
+            assert.include(error.message, "VM Exception", "Making bet with amount > MAX_BET should throw exception");
         });
     });
 });

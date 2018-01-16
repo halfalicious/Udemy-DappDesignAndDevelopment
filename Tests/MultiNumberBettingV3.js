@@ -44,6 +44,16 @@ contract('MultiNumberBettingV3', function(accounts) {
             assert.equal(result.valueOf(), guessCount - 1, "Total winner count is incorrect");
         });
     });
+
+    it("Bet value > 10 triggers exception", function() {
+        var multiNumberBetting;
+        return MultiNumberBettingV3.deployed().then(function (instance) {
+            multiNumberBetting = instance;
+            return multiNumberBetting.guess(11, "Charlie");
+        }).then(assert.fail).catch(function (error) {
+            assert.include(error.message, 'VM Exception', 'Expected bet value outside of valid range to trigger exception ');
+        });
+    });
 });
 
 contract('MultiNumberBettingV3', function(accounts) {
@@ -114,7 +124,6 @@ contract('MultiNumberBettingV3', function(accounts) {
     });
 
     // TODO:Add test which validates lastWinner time values are changed after winning guess
-    //      Need to find equivalent of assert.notEqual
 });
 
 contract('MultiNumberBettingV3', function(accounts) {
@@ -147,14 +156,4 @@ contract('MultiNumberBettingV3', function(accounts) {
     });
 });
 
-    // TODO:Verify exception is thrown when guess is outside of required range defined in contract
-    // Note:Cannot currently test as Truffle doesn't seem to have JS support for testing
-    //      for expected exceptions. See the following page for details:
-    //
-    //          https://github.com/trufflesuite/truffle/issues/498
-    //          
-    //      This does appear to be supported for tests written in Solidity: 
-    //
-    //          http://truffleframework.com/tutorials/testing-for-throws-in-solidity-tests
-    //
 

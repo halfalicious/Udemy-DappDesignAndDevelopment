@@ -2,7 +2,7 @@
 // Simple betting smart contract from Section 7 (Ethereum Smart Contract Development Using Solidity) Coding
 // Exercise 4 (Enum, Mapping, & Struct)
 //    
-//    https://www.udemy.com/ethereum-dapp/learn/v4/t/lecture/7030576?start=0
+//    https://www.udemy.com/ethereum-dapp/learn/v4/t/lecture/7029938?start=0
 //
 
 pragma solidity ^0.4.4;
