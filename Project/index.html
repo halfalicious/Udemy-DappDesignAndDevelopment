@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MultiNumberBetting Smart Contract</title>
+   
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+    
+  </head>
+  <body>
+    <!--[if IE]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    
+    <div class="hero-unit">
+      <h1 style="text-align:center">MultiNumberBetting smart contract</h1>
+      <h3 style="text-align:center">Section 7 ("Ethereum smart contract development using Solidity")</h3>
+    </div>
+    <div class="flex-wrapper">
+      <div class="grid-wrapper">
+        <div class="box control-accounts">
+          <div class="control-title">Accounts</div>
+          <select id="account_list"></select>
+          <div class="control-data">
+            <label class="data-label">Balance:</label><label class="data-value" id="account_balance"></label>
+          </div>
+        </div>
+        <div class="box control-bet">
+          <div class="control-title">Make a bet</div>
+          <div class="control-data">
+            <label class="data-label">Name</label><input class="data-input" type="text" id="better_name"></input>
+          </div>
+          <div class="control-data">
+            <label class="data-label">Guess</label><input class="data-input" type="text" id="better_guess"></input>
+          </div>
+          <div class="control-data">
+            <label class="data-label">Bet</label><input class="data-input" type="text" id="better_value"></input>
+          </div>
+          <button style="margin: 5px" id="submit_bet" onclick="submitBet()">Submit</button>
+        </div>
+        <div class="box control-query">
+          <div class="control-title">Query Winner</div>
+          <div><button id="getLastWinner" onclick="getLastWinnerInfo()">Get Last Winner Info</button></div>
+          <div><button id="checkWinner" onclick="checkWinning()">Check winner</button></div>
+        </div>
+        <div class="box control-owner">
+          <div class="control-title">Owner</div>
+          <div>
+            <label class="data-label">Operation</label>
+            <select id="owner_operation">
+              <option>Deposit</option>
+              <option>Withdraw</option>
+            </select>
+          </div>
+          <div>
+            <label class="data-label">Amount</label>
+            <input class="data-input" type="text" id="owner_amount"/>
+          </div>
+          <button id="owner_submit" onclick="submitOwnerOperation()">Submit</button>
+        </div>
+        <div class="box display-winner">
+          <div class="winner-title">Winner Information</div>
+          <div>
+            <label class="winner-label">Address:</label><label id="winner_address">...</label>
+          </div>
+          <div>
+            <label class="winner-label">Name:</label><label id="winner_name">...</label>
+          </div>
+          <div>
+            <label class="winner-label">Guess:</label><label id="winner_guess_value">...</label>
+          </div>
+          <div>
+            <label class="winner-label">Won Amount:</label><label id="winner_amount">...</label>
+          </div>
+          <div>
+            <label class="winner-label">Time Amount:</label><label id="winner_time_won">...</label>
+          </div>
+        </div>
+        <div class="box display-stats">
+          <h3>Stats</h3>
+          <span class="label">Winner Count:</span><span id="winner_count">...</span><br>
+          <span class="label">Loser Count:</span><span id="loser_count">...</span><br>
+          <span class="label">Total Guesses:</span><span id="total_guesses">...</span><br>
+          <span class="label">Last Time Won:</span><span id="last_time_won">...</span><br>
+        </div>
+        <div class="box display-connection" id="ConnectionInfo">
+          <h3>Connection Info</h3>
+          <span class="label">Connected:</span><span id="connection_status">...</span><br>
+          <span class="label">Node Version:</span><span id="node_version">...</span><br>
+          <span class="label">Peer Count:</span><span id="peer_count">...</span><br>
+          <span class="label">Block Number:</span><span id="block_number">...</span><br>
+        </div>
+        <div class="box control-contract" id="Contract">
+          <h2 class="control-title">Deploy Contract</h2>
+          <span><b>Val1: </b></span><input type="text" id="contract_val1" value="3"/><br>
+          <span><b>Val2: </b></span><input type="text" id="contract_val2" value="5"/><br>
+          <span><b>Val3: </b></span><input type="text" id="contract_val3" value="7"/><br>
+          <button id="deploy_contract" onclick="deployContract()">Deploy</button>
+        </div>
+        <div class="box display-contract">
+          <h3 class="control-title">Contract Info</h3>
+          <span><b>Address: </b></span><span id="contract_address">...</span><br>
+          <span><b>Balance: </b></span><span id="contract_balance">...</span><br>
+          <span><b>Owner: </b></span><span id="contract_owner">...</span><br>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <script>
+      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+      e.src='https://www.google-analytics.com/analytics.js';
+      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+      ga('create','UA-XXXXX-X');ga('send','pageview');
+    </script>
+
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="/bower_components/bignumber.js/bignumber.js"></script>
+    <script src="/bower_components/crypto-js/index.js"></script>
+    <script src="/bower_components/web3/dist/web3.js"></script>
+    <script src="/bower_components/web3/dist/web3.min.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+    
+    <!-- build:js scripts/main.js -->
+    <script src="scripts/main.js"></script>
+    <!-- endbuild -->
+  </body>
+</html>
